@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Subpop – subscription tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2eeff;--card:#fff;--ink:#1c1238;--mute:#6f6590;--line:#e1daf7;--a:#6c3bff;--b:#ff5c8a;--c:#ffc83d;--d:#18c98f;--sh:0 8px 24px rgba(60,30,140,.10);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150d2b;--card:#21153f;--ink:#f3eeff;--mute:#a699cc;--line:#352661;--sh:0 8px 24px rgba(0,0,0,.35)}}
+:root[data-theme="dark"]{--bg:#150d2b;--card:#21153f;--ink:#f3eeff;--mute:#a699cc;--line:#352661;--sh:0 8px 24px rgba(0,0,0,.35)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 'DM Sans',system-ui,sans-serif;min-height:100vh}
+h1,h2,h3{font-family:'Bricolage Grotesque',Georgia,sans-serif;margin:0;letter-spacing:-.02em}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;max-width:980px;margin:auto}
+.logo{font:800 26px 'Bricolage Grotesque',sans-serif;display:flex;gap:8px;align-items:center}
+.logo i{width:30px;height:30px;border-radius:50% 50% 50% 8px;background:linear-gradient(135deg,var(--a),var(--b));display:inline-block}
+.xp{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
+.bar{width:90px;height:10px;border-radius:9px;background:var(--line);overflow:hidden}
+.bar b{display:block;height:100%;background:linear-gradient(90deg,var(--c),var(--b));transition:width .6s}
+.tbtn{background:var(--card);border:1px solid var(--line);border-radius:50%;width:36px;height:36px}
+nav{display:flex;gap:6px;max-width:980px;margin:0 auto;padding:0 20px 12px;overflow-x:auto}
+nav a{padding:9px 16px;border-radius:99px;text-decoration:none;color:var(--mute);font-weight:700;white-space:nowrap;transition:.2s}
+nav a:hover{transform:translateY(-2px)}
+nav a.on{background:var(--ink);color:var(--bg)}
+main{max-width:980px;margin:auto;padding:8px 20px 80px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--sh)}
+.hero{background:linear-gradient(135deg,var(--a),#a23bff 60%,var(--b));color:#fff;border-radius:30px;padding:28px;margin-bottom:16px;position:relative;overflow:hidden}
+.hero .big{font:800 clamp(52px,14vw,92px)/1 'Bricolage Grotesque',sans-serif;margin:6px 0}
+.hero .pill{display:inline-block;background:rgba(255,255,255,.2);border-radius:99px;padding:5px 12px;margin:4px 6px 0 0;font-weight:700;font-size:14px}
+.hero:after{content:"";position:absolute;right:-50px;top:-50px;width:200px;height:200px;border-radius:50%;background:rgba(255,200,61,.35);filter:blur(4px)}
+.muted{color:var(--mute);font-size:14px}
+.btn{border:0;border-radius:14px;padding:11px 18px;font-weight:700;background:var(--a);color:#fff;transition:transform .15s}
+.btn:hover{transform:scale(1.04)}.btn:active{transform:scale(.94)}
+.btn.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.warn{background:var(--b)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.em{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:var(--bg);flex:none}
+.grow{flex:1;min-width:0}
+.grow b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag{border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700;background:var(--c);color:#1c1238;white-space:nowrap}
+.tag.red{background:var(--b);color:#fff}.tag.grn{background:var(--d);color:#073}
+form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+label{font-size:13px;font-weight:700;color:var(--mute);display:grid;gap:4px}
+input,select{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:10px 12px;width:100%}
+input:focus,select:focus{border-color:var(--a);outline:0}
+.donut{width:160px;height:160px;border-radius:50%;margin:10px auto;display:grid;place-items:center;transition:.5s}
+.donut div{width:98px;height:98px;border-radius:50%;background:var(--card);display:grid;place-items:center;font:800 18px 'Bricolage Grotesque'}
+.leg{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;font-size:13px}
+.leg span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--k);margin-right:5px}
+.alert{background:var(--c);color:#1c1238;border-radius:18px;padding:12px 16px;margin-bottom:14px;font-weight:700;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal div{aspect-ratio:1;border-radius:12px;background:var(--bg);padding:4px;font-size:12px;position:relative;overflow:hidden}
+.cal .h{aspect-ratio:auto;background:0;text-align:center;font-weight:700;color:var(--mute)}
+.cal .t{outline:2px solid var(--a)}
+.cal .ev{display:block;font-size:15px;line-height:1.1}
+.badge{text-align:center;padding:14px;border-radius:18px;background:var(--bg);border:2px dashed var(--line);filter:grayscale(1);opacity:.55;transition:.4s}
+.badge.got{filter:none;opacity:1;border:2px solid var(--c);transform:rotate(-1.5deg)}
+.badge span{font-size:34px;display:block}
+#arena{position:relative;height:340px;background:linear-gradient(var(--bg),var(--line));border-radius:22px;overflow:hidden;touch-action:manipulation;user-select:none}
+.mole{position:absolute;font-size:34px;background:var(--card);border-radius:50%;width:56px;height:56px;border:0;box-shadow:var(--sh);animation:pop .25s}
+@keyframes pop{from{transform:scale(0)}}
+.big2{font:800 40px 'Bricolage Grotesque';text-align:center}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.pick button{border:2px solid var(--line);background:var(--card);border-radius:20px;padding:20px 8px;font-weight:700;transition:.2s}
+.pick button:hover{border-color:var(--a);transform:translateY(-3px)}
+.pick span{display:block;font-size:40px}
+canvas{position:fixed;inset:0;pointer-events:none;z-index:50}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,120px);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:99px;font-weight:700;transition:.4s;z-index:60;max-width:90vw;text-align:center}
+.toast.s{transform:translate(-50%,0)}
+.wheel{font-size:64px;text-align:center;min-height:80px}
+h2{margin:18px 0 10px;font-size:26px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<canvas id="cf"></canvas><div class="toast" id="toast"></div>
+<header><div class="logo"><i></i>Subpop</div>
+<div class="xp"><span id="lvl">Lv 1</span><div class="bar"><b id="xpb"></b></div><button class="tbtn" id="theme" aria-label="Toggle theme">🌓</button></div></header>
+<nav id="nav"><a href="#home">Dashboard</a><a href="#subs">My subs</a><a href="#cal">Calendar</a><a href="#fun">Insights</a><a href="#games">Arcade</a></nav>
+<main id="app"></main>
+<script>
+const $=s=>document.querySelector(s);
+const CATS={Streaming:['🎬','#6c3bff'],Music:['🎧','#ff5c8a'],Software:['💻','#18c98f'],Gaming:['🎮','#ffc83d'],Fitness:['💪','#ff8a3d'],News:['📰','#3da5ff'],Other:['✨','#9a8fc0']};
+let S={subs:[],xp:0,saved:0,badges:[],lead:3,best:0,asked:false};
+try{const r=localStorage.getItem('subpop');if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem('subpop',JSON.stringify(S))}catch(e){}};
+const money=n=>'$'+n.toFixed(2);
+const day=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x};
+const today=()=>day(new Date());
+const iso=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+const parse=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)};
+const mo=s=>s.cycle==='yearly'?s.price/12:s.cycle==='weekly'?s.price*52/12:s.price;
+function step(d,c){const x=new Date(d);c==='yearly'?x.setFullYear(x.getFullYear()+1):c==='weekly'?x.setDate(x.getDate()+7):x.setMonth(x.getMonth()+1);return x}
+function nextDate(s){let d=parse(s.next),t=today(),n=0;while(d<t&&n++<500)d=step(d,s.cycle);return d}
+const daysTo=s=>Math.round((nextDate(s)-today())/864e5);
+const tot=()=>S.subs.reduce((a,s)=>a+mo(s),0);
+function toast(m){const t=$('#toast');t.textContent=m;t.className='toast s';clearTimeout(t.h);t.h=setTimeout(()=>t.className='toast',2600)}
+function addXp(n){S.xp+=n;save();head()}
+function head(){const l=Math.floor(S.xp/100)+1;$('#lvl').textContent='Lv '+l;$('#xpb').style.width=(S.xp%100)+'%'}
+const BADGES=[['🌱','First sub','Add a subscription',()=>S.subs.length>=1],['📚','Collector','Track 5 subs',()=>S.subs.length>=5],['✂️','Snip snip','Cancel a sub',()=>S.saved>0],['💰','$100 saver','Save $100/yr',()=>S.saved>=100],['🎯','Sharpshooter','Score 15 in Whack',()=>S.best>=15],['⭐','Level 3','Reach 200 XP',()=>S.xp>=200]];
+function checkBadges(){BADGES.forEach(b=>{if(!S.badges.includes(b[1])&&b[3]()){S.badges.push(b[1]);toast(b[0]+' Badge unlocked: '+b[1]);boom();S.xp+=30}});save();head()}
+// confetti
+const cv=$('#cf'),cx=cv.getContext('2d');let ps=[];
+function boom(x,y){cv.width=innerWidth;cv.height=innerHeight;x=x||innerWidth/2;y=y||innerHeight/3;for(let i=0;i<90;i++)ps.push({x,y,vx:(Math.random()-.5)*14,vy:Math.random()*-12-2,c:['#6c3bff','#ff5c8a','#ffc83d','#18c98f'][i%4],r:Math.random()*6+3,l:90});if(ps.length===90)tick()}
+function tick(){cx.clearRect(0,0,cv.width,cv.height);ps=ps.filter(p=>p.l-->0);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.4;cx.fillStyle=p.c;cx.fillRect(p.x,p.y,p.r,p.r*1.6)});if(ps.length)requestAnimationFrame(tick)}
+function countUp(el,to){if(matchMedia('(prefers-reduced-motion:reduce)').matches){el.textContent=money(to);return}let t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/900);el.textContent=money(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)})(t0)}
+// reminders
+function dueSoon(){return S.subs.filter(s=>daysTo(s)<=S.lead).sort((a,b)=>daysTo(a)-daysTo(b))}
+function notify(){try{if(window.Notification&&Notification.permission==='granted'){dueSoon().forEach(s=>{const k='n'+s.id+iso(nextDate(s));if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,1);new Notification(s.name+' renews '+(daysTo(s)?'in '+daysTo(s)+' days':'today'),{body:money(s.price)+' will be charged'})}})}}catch(e){}}
+const when=d=>d===0?'today':d===1?'tomorrow':'in '+d+' days';
+// views
+const V={};
+V.home=()=>{const due=dueSoon(),t=tot(),n=S.subs.slice().sort((a,b)=>daysTo(a)-daysTo(b))[0];
+let h=due.map(s=>`<div class="alert"><span>${CATS[s.cat][0]} ${s.name} renews ${when(daysTo(s))} · ${money(s.price)}</span><button class="btn warn" onclick="cancelSub('${s.id}')">Cancel it</button></div>`).join('');
+h+=`<div class="hero"><div>You're spending</div><div class="big" id="tot">$0.00</div><div>every month</div><div style="margin-top:10px"><span class="pill">${money(t*12)} / year</span><span class="pill">${S.subs.length} subs</span><span class="pill">${n?'Next: '+n.name+' '+when(daysTo(n)):'Nothing yet'}</span></div></div>`;
+if(!S.subs.length)return h+`<div class="card" style="text-align:center"><div style="font-size:56px">🫧</div><h2>No subscriptions yet</h2><p class="muted">Add your first one or load demo data to see everything come alive.</p><button class="btn" onclick="location.hash='subs'">Add a subscription</button> <button class="btn alt" onclick="demo()">Load demo data</button></div>`;
+const by={};S.subs.forEach(s=>by[s.cat]=(by[s.cat]||0)+mo(s));let a=0,st=[];Object.entries(by).forEach(([k,v])=>{const p=v/t*100;st.push(`${CATS[k][1]} ${a}% ${a+p}%`);a+=p});
+h+=`<div class="grid"><div class="card"><h3>Where it goes</h3><div class="donut" style="background:conic-gradient(${st.join(',')})"><div>${money(t)}</div></div><div class="leg">${Object.keys(by).map(k=>`<span style="--k:${CATS[k][1]}">${k} ${money(by[k])}</span>`).join('')}</div></div>
+<div class="card"><h3>Coming up</h3>${S.subs.slice().sort((a,b)=>daysTo(a)-daysTo(b)).slice(0,5).map(s=>`<div class="row"><div class="em">${CATS[s.cat][0]}</div><div class="grow"><b>${s.name}</b><span class="muted">${money(s.price)}</span></div><span class="tag ${daysTo(s)<=S.lead?'red':''}">${when(daysTo(s))}</span></div>`).join('')}</div></div>`;
+setTimeout(()=>countUp($('#tot'),t),30);return h};
+V.subs=()=>`<h2>Add a subscription</h2><div class="card"><form onsubmit="add(event)"><label>Name<input id="fn" required placeholder="Netflix"></label><label>Price ($)<input id="fp" type="number" step="0.01" min="0" required placeholder="15.99"></label><label>Billed<select id="fc"><option value="monthly">Monthly</option><option value="yearly">Yearly</option><option value="weekly">Weekly</option></select></label><label>Next renewal<input id="fd" type="date" required value="${iso(step(today(),'monthly'))}"></label><label>Category<select id="fk">${Object.keys(CATS).map(k=>`<option>${k}</option>`).join('')}</select></label><label>&nbsp;<button class="btn">Add it</button></label></form></div>
+<h2>Reminders</h2><div class="card"><label>Remind me <select id="lead" onchange="S.lead=+this.value;save();toast('Reminder set: '+this.value+' days before')">${[1,2,3,5,7,14].map(n=>`<option ${n==S.lead?'selected':''} value="${n}">${n} day${n>1?'s':''} before</option>`).join('')}</select></label><p class="muted">Alerts appear on your dashboard. Turn on browser notifications to get pinged while this page is open.</p><button class="btn alt" onclick="askNotif()">🔔 Enable notifications</button></div>
+<h2>All subscriptions (${S.subs.length})</h2><div class="card">${S.subs.map(s=>`<div class="row"><div class="em">${CATS[s.cat][0]}</div><div class="grow"><b>${s.name}</b><span class="muted">${money(s.price)} ${s.cycle} · renews ${nextDate(s).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</span></div><button class="btn alt" onclick="cancelSub('${s.id}')">Cancel</button><button class="btn alt" aria-label="Delete" onclick="del('${s.id}')">🗑</button></div>`).join('')||'<p class="muted">Nothing here yet. Add one above.</p>'}</div>`;
+V.cal=()=>{const n=new Date(),y=n.getFullYear(),m=n.getMonth(),f=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate();let c=['S','M','T','W','T','F','S'].map(x=>`<div class="h">${x}</div>`).join('')+'<div style="background:0"></div>'.repeat(f);
+for(let d=1;d<=dim;d++){const ev=S.subs.filter(s=>{let x=parse(s.next);let k=0;while(x<new Date(y,m,d)&&k++<500)x=step(x,s.cycle);return x.getTime()===new Date(y,m,d).getTime()});c+=`<div class="${d===n.getDate()?'t':''}" title="${ev.map(e=>e.name+' '+money(e.price)).join(', ')}">${d}${ev.map(e=>`<span class="ev">${CATS[e.cat][0]}</span>`).join('')}</div>`}
+const mt=S.subs.reduce((a,s)=>a+mo(s),0);
+return `<h2>${n.toLocaleString(undefined,{month:'long',year:'numeric'})}</h2><div class="card"><div class="cal">${c}</div><p class="muted">Tap or hover a day to see charges. Monthly cost averages to ${money(mt)}.</p></div>`};
+V.fun=()=>{const t=tot(),y=t*12;const eq=[['☕ coffees',4.5],['🍕 pizzas',14],['🎟 movie tickets',15],['✈️ weekend flights',180]];
+const top=S.subs.slice().sort((a,b)=>mo(b)-mo(a))[0];
+return `<h2>Insights</h2><div class="grid"><div class="card"><h3>Your year in stuff</h3><p class="muted">${money(y)} a year equals:</p>${eq.map(e=>`<div class="row"><div class="grow"><b>${Math.floor(y/e[1])} ${e[0]}</b></div></div>`).join('')}</div>
+<div class="card"><h3>Money saved</h3><div class="big2" style="color:var(--d)">${money(S.saved)}</div><p class="muted" style="text-align:center">per year by cancelling subs. Level ${Math.floor(S.xp/100)+1} · ${S.xp} XP</p>${top?`<p>Your priciest sub is <b>${top.name}</b> at ${money(mo(top))}/mo. Worth it?</p>`:''}</div></div>
+<h2>Fortune wheel</h2><div class="card"><div class="wheel" id="wh">🎰</div><p class="muted" style="text-align:center">Spin for a surprise and +10 XP</p><div style="text-align:center"><button class="btn" onclick="spin()">Spin</button></div></div>
+<h2>Badges</h2><div class="grid">${BADGES.map(b=>`<div class="badge ${S.badges.includes(b[1])?'got':''}"><span>${b[0]}</span><b>${b[1]}</b><div class="muted">${b[2]}</div></div>`).join('')}</div>`};
+V.games=()=>`<h2>Arcade</h2><div class="grid"><div class="card"><h3>🔨 Whack-a-Sub</h3><p class="muted">Tap the subs before they vanish. 20 seconds. Best: <b id="best">${S.best}</b></p><div id="arena"></div><div class="big2"><span id="sc">0</span> pts · <span id="tm">20</span>s</div><div style="text-align:center"><button class="btn" id="go" onclick="whack()">Start</button></div></div>
+<div class="card"><h3>⚖️ Pricey or cheap?</h3><p class="muted">Which costs more per month? Streak: <b id="stk">0</b></p><div class="pick" id="hl"></div><div id="hr" class="muted" style="text-align:center;min-height:24px"></div></div></div>`;
+// actions
+function add(e){e.preventDefault();S.subs.push({id:Date.now()+'',name:$('#fn').value.trim(),price:+$('#fp').value,cycle:$('#fc').value,next:$('#fd').value,cat:$('#fk').value});save();addXp(15);boom();toast('✅ Added! +15 XP');checkBadges();route()}
+function del(id){S.subs=S.subs.filter(s=>s.id!==id);save();route()}
+function cancelSub(id){const s=S.subs.find(x=>x.id===id);if(!s)return;S.saved+=mo(s)*12;S.subs=S.subs.filter(x=>x.id!==id);save();addXp(40);boom();toast('✂️ Cancelled '+s.name+'. You save '+money(mo(s)*12)+'/yr! +40 XP');checkBadges();route()}
+function demo(){const d=(n)=>iso(new Date(Date.now()+n*864e5));S.subs=S.subs.concat([['Netflix',15.49,'monthly',2,'Streaming'],['Spotify',11.99,'monthly',9,'Music'],['iCloud',2.99,'monthly',5,'Software'],['Gym',29,'monthly',14,'Fitness'],['Game Pass',16.99,'monthly',20,'Gaming'],['Nebula',60,'yearly',40,'Streaming'],['The Daily',4,'weekly',1,'News']].map((x,i)=>({id:Date.now()+''+i,name:x[0],price:x[1],cycle:x[2],next:d(x[3]),cat:x[4]})));save();boom();checkBadges();route()}
+function askNotif(){try{Notification.requestPermission().then(p=>{toast(p==='granted'?'🔔 Notifications on':'Notifications blocked in your browser');notify()})}catch(e){toast('Notifications not supported here')}}
+function spin(){const o=['🎉 Cancel one sub you forgot about','💸 You deserve a treat, skip a coffee','🧠 Share a family plan and split it','📅 Switch to yearly billing to save ~15%','🔍 Check for student or bundle discounts','🌟 Bonus +25 XP!'],w=$('#wh');let i=0;const h=setInterval(()=>{w.textContent=['🎰','🍀','💎','⭐'][i++%4]},90);setTimeout(()=>{clearInterval(h);const k=Math.floor(Math.random()*o.length);w.innerHTML='<div style="font:700 20px DM Sans">'+o[k]+'</div>';addXp(k===5?35:10);boom()},1100)}
+let wt;function whack(){clearInterval(wt);let sc=0,tm=20;const ar=$('#arena');ar.innerHTML='';$('#sc').textContent=0;$('#go').disabled=true;
+wt=setInterval(()=>{tm--;$('#tm').textContent=tm;const m=document.createElement('button');const k=Object.values(CATS)[Math.floor(Math.random()*6)];m.className='mole';m.textContent=k[0];m.setAttribute('aria-label','Subscription');m.style.left=Math.random()*(ar.clientWidth-60)+'px';m.style.top=Math.random()*(ar.clientHeight-60)+'px';m.onclick=e=>{sc++;$('#sc').textContent=sc;m.remove();boom(e.clientX,e.clientY)};ar.appendChild(m);setTimeout(()=>m.remove(),1100);
+if(tm<=0){clearInterval(wt);$('#go').disabled=false;if(sc>S.best){S.best=sc;$('#best').textContent=sc;toast('🏆 New best: '+sc)}else toast('Final score '+sc);addXp(sc*2);checkBadges()}},500)}
+let hs=0;function hl(){const k=Object.keys(P);const a=k[Math.floor(Math.random()*k.length)];let b;do b=k[Math.floor(Math.random()*k.length)];while(b===a);$('#hl').innerHTML=[a,b].map(n=>`<button onclick="guess('${n}','${a}','${b}')"><span>${P[n][0]}</span>${n}</button>`).join('');$('#hr').textContent='Tap the pricier one'}
+const P={Netflix:['🎬',15.49],Spotify:['🎧',11.99],'Disney+':['🏰',13.99],'YouTube Premium':['▶️',13.99],'ChatGPT Plus':['🤖',20],'Xbox Game Pass':['🎮',16.99],'Apple Music':['🍎',10.99],Peloton:['🚴',44],'NYT':['📰',25],Dropbox:['📦',11.99],'Adobe CC':['🎨',59.99],Hulu:['📺',17.99]};
+function guess(n,a,b){const o=n===a?b:a,ok=P[n][1]>=P[o][1];if(ok){hs++;boom();addXp(5);$('#hr').textContent=`✅ ${n} ${money(P[n][1])} vs ${o} ${money(P[o][1])}`}else{hs=0;$('#hr').textContent=`❌ ${o} costs ${money(P[o][1])}`}$('#stk').textContent=hs;setTimeout(hl,1100)}
+function route(){const r=(location.hash||'#home').slice(1),v=V[r]?r:'home';document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.hash==='#'+v));$('#app').innerHTML=V[v]();if(v==='games')hl();head();notify()}
+$('#theme').onclick=()=>{const d=document.documentElement,dark=d.dataset.theme==='dark'||(d.dataset.theme!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);d.dataset.theme=dark?'light':'dark'};
+addEventListener('hashchange',route);route();
+</script></body></html>
